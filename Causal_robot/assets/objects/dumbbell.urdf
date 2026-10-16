@@ -1,0 +1,79 @@
+<?xml version="0.0" ?>
+<robot name="dumbbell.urdf">
+  <!--
+    Physically-realistic dumbbell.
+    Mass: 0.1 kg, total length 0.06 m, weight diameter 0.025 m.
+    Long axis: local Z (so euler=[pi/2, 0, 0] at load time = lying along world Y).
+
+    CRITICAL FIX (v521): inertia was ixx=iyy=izz=1.0 for a 0.1 kg object.
+    For a ~5cm object that's WRONG BY ~20000x and causes severe numerical
+    vibration that visibly shakes the dumbbell free of any pile.
+    Correct order of magnitude: I = (1/12) * m * L^2 ~ 5e-5
+    Also removed the <inertia_scaling value="3.0"/> tag that amplified
+    contact inertia by another 3x.
+  -->
+  <link name="baseLink">
+    <contact>
+      <lateral_friction value="0.9"/>
+      <rolling_friction value="0.005"/>
+      <spinning_friction value="0.005"/>
+    </contact>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.1"/>
+      <!-- Correct order of magnitude for a 5cm, 0.1kg object -->
+      <inertia ixx="5e-5" ixy="0" ixz="0" iyy="5e-5" iyz="0" izz="2e-5"/>
+    </inertial>
+
+    <!-- Middle bar (long axis Z, 0.06 m long, 0.01 cross-section) -->
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size=".01 .01 .06"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0.3059 0.4745 0.6549 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size=".01 .01 .06"/>
+      </geometry>
+    </collision>
+
+    <!-- Top weight -->
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.025"/>
+      <geometry>
+        <box size=".025 .025 .0125"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0.3059 0.4745 0.6549 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.025"/>
+      <geometry>
+        <box size=".025 .025 .0125"/>
+      </geometry>
+    </collision>
+
+    <!-- Bottom weight -->
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.025"/>
+      <geometry>
+        <box size=".025 .025 .0125"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0.3059 0.4745 0.6549 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.025"/>
+      <geometry>
+        <box size=".025 .025 .0125"/>
+      </geometry>
+    </collision>
+  </link>
+</robot>
